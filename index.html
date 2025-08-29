@@ -9,6 +9,11 @@
       background-color: #111;
       color: #00ff99;
       font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 40px 20px;
     }
 
     h1, h2 {
@@ -18,24 +23,20 @@
     }
 
     img {
-      display: block;
-      margin: 20px auto;
       max-width: 90%;
       border: 4px solid #00ff99;
       border-radius: 10px;
       box-shadow: 0 0 10px #00ff99;
+      margin-top: 20px;
     }
 
     .caption {
-      text-align: center;
       font-style: italic;
-      margin-bottom: 30px;
+      margin-top: 10px;
       color: #ccc;
     }
 
     #loadMeme {
-      display: block;
-      margin: 0 auto;
       padding: 10px 20px;
       font-size: 1.1em;
       background-color: #00ff99;
@@ -46,26 +47,26 @@
       font-weight: bold;
       box-shadow: 0 0 5px #00ff99;
       transition: 0.2s;
+      margin-top: 30px;
     }
 
     #loadMeme:hover {
       background-color: #00dd88;
     }
 
+    .container {
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
-  <h1>Say my name</h1>
-  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/44/Breaking_Bad_Say_My_Name.png/375px-Breaking_Bad_Say_My_Name.png" alt="Say My Name Scene"/>
-  <div class="caption">You're goddamn right.</div>
-
-  <h2>He can't keep getting away with it!</h2>
-  <img src="https://i.imgflip.com/4cxvd2.jpg" alt="Jesse Meme"/>
-  <div class="caption">Jesse Loses It</div>
-
-  <button id="loadMeme">Load Random Breaking Bad Meme</button>
-  <img id="randomMeme" style="display:none;" alt="Random Breaking Bad Meme"/>
-  <div class="caption" id="memeCaption" style="display:none;"></div>
+  <div class="container">
+    <button id="loadMeme">Load Random Breaking Bad Meme</button>
+    <img id="randomMeme" style="display:none;" alt="Random Breaking Bad Meme"/>
+    <div class="caption" id="memeCaption" style="display:none;"></div>
+  </div>
 
   <script>
     const btn = document.getElementById('loadMeme');
@@ -74,12 +75,25 @@
 
     btn.addEventListener('click', async () => {
       try {
+        memeImg.style.display = 'none';
+        memeCaption.style.display = 'none';
+
         const res = await fetch('https://meme-api.com/gimme/breakingbadmemes');
         const data = await res.json();
+
         memeImg.src = data.url;
-        memeImg.style.display = 'block';
-        memeCaption.textContent = data.title;
-        memeCaption.style.display = 'block';
+
+        memeImg.onload = () => {
+          memeImg.style.display = 'block';
+          memeCaption.textContent = data.title;
+          memeCaption.style.display = 'block';
+        };
+
+        memeImg.onerror = () => {
+          memeCaption.textContent = "Image failed to load 😢";
+          memeCaption.style.display = 'block';
+        };
+
       } catch (error) {
         memeCaption.textContent = "Couldn't fetch meme 😢";
         memeCaption.style.display = 'block';
