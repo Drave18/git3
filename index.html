@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Heisenmeme</title>
+  <title>Breaking Bad Meme Machine</title>
   <style>
     body {
       background-color: #111;
@@ -19,30 +19,39 @@
 
     img {
       display: block;
-      margin: 0 auto;
+      margin: 20px auto;
       max-width: 90%;
       border: 4px solid #00ff99;
       border-radius: 10px;
       box-shadow: 0 0 10px #00ff99;
     }
 
-    h1::after {
-      content: "💀";
-      margin-left: 10px;
-    }
-
-    h2 {
-      font-size: 1.5em;
-      margin-top: 10px;
-    }
-
     .caption {
-      margin-top:10px;
       text-align: center;
       font-style: italic;
       margin-bottom: 30px;
       color: #ccc;
     }
+
+    #loadMeme {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 20px;
+      font-size: 1.1em;
+      background-color: #00ff99;
+      color: #111;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 5px #00ff99;
+      transition: 0.2s;
+    }
+
+    #loadMeme:hover {
+      background-color: #00dd88;
+    }
+
   </style>
 </head>
 <body>
@@ -50,8 +59,33 @@
   <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/44/Breaking_Bad_Say_My_Name.png/375px-Breaking_Bad_Say_My_Name.png" alt="Say My Name Scene"/>
   <div class="caption">You're goddamn right.</div>
 
-  <h2>AHHHHHHHHHHHH</h2>
+  <h2>He can't keep getting away with it!</h2>
   <img src="https://i.imgflip.com/4cxvd2.jpg" alt="Jesse Meme"/>
-  <div class="caption">He can't keep getting away with it!</div>
+  <div class="caption">Jesse Loses It</div>
+
+  <button id="loadMeme">Load Random Breaking Bad Meme</button>
+  <img id="randomMeme" style="display:none;" alt="Random Breaking Bad Meme"/>
+  <div class="caption" id="memeCaption" style="display:none;"></div>
+
+  <script>
+    const btn = document.getElementById('loadMeme');
+    const memeImg = document.getElementById('randomMeme');
+    const memeCaption = document.getElementById('memeCaption');
+
+    btn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('https://meme-api.com/gimme/breakingbadmemes');
+        const data = await res.json();
+        memeImg.src = data.url;
+        memeImg.style.display = 'block';
+        memeCaption.textContent = data.title;
+        memeCaption.style.display = 'block';
+      } catch (error) {
+        memeCaption.textContent = "Couldn't fetch meme 😢";
+        memeCaption.style.display = 'block';
+        console.error("Error fetching meme:", error);
+      }
+    });
+  </script>
 </body>
 </html>
